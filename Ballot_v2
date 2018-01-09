@@ -1,7 +1,7 @@
 pragma solidity ^0.4.9;
 
 /// Smart Contract de votacion
-///@author drumsjuanma@gmail.com
+///@author drumsjuanma
 contract Ballot {
 
 
