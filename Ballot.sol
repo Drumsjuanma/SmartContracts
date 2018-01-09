@@ -7,6 +7,8 @@ contract Ballot {
         uint8 vote;
         address delegate;
     }
+
+    
     struct Proposal {
         uint voteCount;
     }
