@@ -45,6 +45,16 @@ contract Ballot {
         }
     }
 
+    // Funcion para asignar responsables de la votacion
+    function setChairperson(address addr) public {
+        if(chairpersons[msg.sender] != true){
+            revert();
+        }
+
+        chairpersons[addr] = true;
+
+    }
+
     // Da derecho de voto a una direccion 
     // Solo puede ser invocado por el chairperson 
     function giveRightToVote(address voter) public {
@@ -53,8 +63,6 @@ contract Ballot {
         }
         voters[voter].weight = 1;
     }
-
-
 
     /// Delega el voto a otra direccion
     function delegate(address to) public{
@@ -86,7 +94,8 @@ contract Ballot {
         }
     }
 
-    /// Funcion para votar la propuesta dada su indice en el aray
+
+    /// Funcion para votar la propuesta dada su indice en el array
     function vote(uint proposal) public {
         Voter storage sender = voters[msg.sender];
         if (sender.voted){
@@ -95,7 +104,7 @@ contract Ballot {
         sender.voted = true;
         sender.vote = proposal;
 
-        // Si la propuesta esta fuera de rango se desacen los cambios automaticamente
+        // Si la propuesta esta fuera de rango se deshacen los cambios automaticamente
         proposals[proposal].voteCount += sender.weight;
     }
 
