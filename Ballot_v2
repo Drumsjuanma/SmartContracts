@@ -20,9 +20,6 @@ contract Ballot {
         uint voteCount; // Numero de votos acumulados
     }
 
-    // Usuario que controla la votacion (da permisos)
-    address public chairperson;
-
     // Maping entre direcciones de usuarios al struct de Voter
     mapping(address => Voter) public voters;
 
@@ -50,10 +47,14 @@ contract Ballot {
         if(chairpersons[msg.sender] != true){
             revert();
         }
-
         chairpersons[addr] = true;
-
     }
+    
+    //Funcion para obtener el nombre de una propuesta
+    function getProposalName(uint index) public constant returns (string) {
+        return bytes32ToString(proposals[index].name);
+    }
+    
 
     // Da derecho de voto a una direccion 
     // Solo puede ser invocado por el chairperson 
@@ -123,4 +124,17 @@ contract Ballot {
     function winnerName() public constant returns (bytes32 winner){
         winner = proposals[winningProposal()].name;
     }
-}       
+    
+    
+    
+    function bytes32ToString (bytes32 data)private pure returns (string) {
+        bytes memory bytesString = new bytes(32);
+        for (uint j=0; j<32; j++) {
+            byte char = byte(bytes32(uint(data) * 2 ** (8 * j)));
+            if (char != 0) {
+                bytesString[j] = char;
+            }
+        }
+        return string(bytesString);
+    }
+}
