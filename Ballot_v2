@@ -30,6 +30,7 @@ contract Ballot {
     // Array dinamica de los nombres de las propuestas
     Proposal[] public proposals;
     
+    // False si la votacion ha finalizado
     bool canVote;
 
     /// Crea una nueva votacion con las propuestas pasadas
