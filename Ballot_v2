@@ -14,8 +14,7 @@ contract Ballot {
     }
 
     // Estructura de datos que representa una propuesta de la votacion
-    struct Proposal
-    {
+    struct Proposal {
         bytes32 name;   // Nombre de la propuesta (hasta 32 bytes)
         uint voteCount; // Numero de votos acumulados
     }
@@ -30,23 +29,27 @@ contract Ballot {
 
     // Array dinamica de los nombres de las propuestas
     Proposal[] public proposals;
+    
+    bool canVote;
 
     /// Crea una nueva votacion con las propuestas pasadas
     function Ballot (bytes32[] proposalNames) public {
         chairpersons[msg.sender] = true;
-
+        canVote = true;
         // Por cada propuesta pasada al constructor se anade una nueva al
         // array de propuestas
         for (uint i = 0; i < proposalNames.length; i++) {
             proposals.push(Proposal({name: proposalNames[i],voteCount: 0}));
         }
     }
+    
+    //Funcion para terminar la votacion
+    function closeBallot() public onlyChairperson {
+        canVote = false;
+    }
 
     // Funcion para asignar responsables de la votacion
-    function setChairperson(address addr) public {
-        if(chairpersons[msg.sender] != true){
-            revert();
-        }
+    function setChairperson(address addr) public onlyChairperson{
         chairpersons[addr] = true;
     }
     
@@ -58,7 +61,7 @@ contract Ballot {
 
     // Da derecho de voto a una direccion 
     // Solo puede ser invocado por el chairperson 
-    function giveRightToVote(address voter) public {
+    function giveRightToVote(address voter) public onlyChairperson {
         if (chairpersons[msg.sender]!=true || voters[voter].voted) {
             revert();
         }
@@ -66,7 +69,7 @@ contract Ballot {
     }
 
     /// Delega el voto a otra direccion
-    function delegate(address to) public{
+    function delegate(address to) public onlyOnOpenBallot{
         Voter storage sender = voters[msg.sender];
         if (sender.voted){
             revert();
@@ -97,7 +100,7 @@ contract Ballot {
 
 
     /// Funcion para votar la propuesta dada su indice en el array
-    function vote(uint proposal) public {
+    function vote(uint proposal) public onlyOnOpenBallot{
         Voter storage sender = voters[msg.sender];
         if (sender.voted){
             revert();
@@ -137,4 +140,15 @@ contract Ballot {
         }
         return string(bytesString);
     }
+    
+    modifier onlyChairperson {
+        require(chairpersons[msg.sender]);
+        _;
+    }
+    
+    modifier onlyOnOpenBallot {
+        require(canVote);
+        _;
+    }
+    
 }
