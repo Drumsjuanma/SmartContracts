@@ -13,6 +13,8 @@ contract Token {
   
   function Token(uint256 _totalSupply) public {
       totalSupply = _totalSupply;
+      owner = msg.sender;
+      balances[msg.sender] = totalSupply;
   }
  
   // Funcion para comprovar el numero de tokens de una cuenta
@@ -30,6 +32,4 @@ contract Token {
         return false;
       }
    }
-
-
 }
