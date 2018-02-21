@@ -2,7 +2,7 @@ pragma solidity ^0.4.19;
 
 contract Token {
 
-  // Mapeo de balances
+  // Mapping de balances
   mapping(address => uint256) balances;
 
   // Total Supply
@@ -17,7 +17,7 @@ contract Token {
       balances[msg.sender] = totalSupply;
   }
  
-  // Funcion para comprovar el numero de tokens de una cuenta
+  // Devuelve el balance de tokens de una cuenta
   function balanceOf(address _owner) public constant returns (uint256 balance) {
     return balances[_owner];
   }
